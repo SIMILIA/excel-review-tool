@@ -27,27 +27,7 @@ function App() {
       {!excelData ? (
         <ExcelUploader onDataLoaded={setExcelData} />
       ) : (
-        <div>
-          <button 
-            className="clear-all-btn" 
-            onClick={handleClearAll}
-            style={{
-              position: 'fixed',
-              top: '10px',
-              right: '10px',
-              zIndex: 1000,
-              padding: '8px 16px',
-              background: '#ff4444',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            重新上传文件
-          </button>
-          <ReviewInterface data={excelData} onClearAll={handleClearAll} />
-        </div>
+        <ReviewInterface data={excelData} onClearAll={handleClearAll} />
       )}
     </div>
   );
