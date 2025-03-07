@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { utils, writeFile } from 'xlsx';
 import './ReviewInterface.css';
 
-function ReviewInterface({ data }) {
+function ReviewInterface({ data, onClearAll }) {
   // 使用 localStorage 存储评审记录
   const storageKey = 'excelReviewData';
   
@@ -70,24 +70,44 @@ function ReviewInterface({ data }) {
   };
 
   const exportToExcel = () => {
-    // 创建一个新的数组，包含所有原始数据
-    const exportData = data.map((item, index) => {
-      const review = reviews.find(r => r.index === index);
-      return {
-        ...item,  // 保留原始数据的所有字段
-        评分结果: review ? (review.isCorrect ? '正确' : '错误') : '',  // 如果有评审则添加结果
-        备注: review?.note || ''  // 如果有备注则添加备注
-      };
-    });
+    try {
+      // 创建一个新的数组，包含所有原始数据
+      const exportData = data.map((item, index) => {
+        const review = reviews.find(r => r.index === index);
+        return {
+          序号: index + 1,
+          问题: item.question,
+          回答: item.answer,
+          服务编号: item.serviceId,
+          评分结果: review ? (review.isCorrect ? '正确' : '错误') : '',
+          备注: review?.note || ''
+        };
+      });
 
-    const ws = utils.json_to_sheet(exportData);
-    const wb = utils.book_new();
-    utils.book_append_sheet(wb, ws, '评审结果');
-    
-    const now = new Date();
-    const fileName = `review-results-${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}.xlsx`;
-    
-    writeFile(wb, fileName);
+      const ws = utils.json_to_sheet(exportData);
+      const wb = utils.book_new();
+      utils.book_append_sheet(wb, ws, '评审结果');
+      
+      const now = new Date();
+      const fileName = `review-results-${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}.xlsx`;
+      
+      writeFile(wb, fileName);
+      alert('文件已导出到下载文件夹！');
+    } catch (error) {
+      alert('导出失败：' + error.message);
+    }
+  };
+
+  const handleClearAll = () => {
+    if (window.confirm('确定要重新上传文件吗？当前的评审记录将会被清除。')) {
+      setReviews([]);
+      localStorage.removeItem(storageKey);
+      localStorage.removeItem('currentIndex');
+      setCurrentIndex(0);
+      if (onClearAll) {
+        onClearAll();
+      }
+    }
   };
 
   // 获取当前记录的评审状态

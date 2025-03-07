@@ -17,11 +17,9 @@ function App() {
   }, [excelData]);
 
   const handleClearAll = () => {
-    if (window.confirm('确定要清除所有数据吗？这将删除所有评审记录和上传的文件。')) {
-      localStorage.removeItem('excelData');
-      localStorage.removeItem('excelReviewData');
-      setExcelData(null);
-    }
+    localStorage.removeItem('excelData');
+    localStorage.removeItem('excelReviewData');
+    setExcelData(null);
   };
 
   return (
@@ -48,7 +46,7 @@ function App() {
           >
             重新上传文件
           </button>
-          <ReviewInterface data={excelData} />
+          <ReviewInterface data={excelData} onClearAll={handleClearAll} />
         </div>
       )}
     </div>
