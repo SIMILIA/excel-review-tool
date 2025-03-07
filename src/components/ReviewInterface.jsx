@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { utils, write } from 'xlsx';
+import { utils, writeFile } from 'xlsx';
 import './ReviewInterface.css';
 
 function ReviewInterface({ data }) {
@@ -64,7 +64,8 @@ function ReviewInterface({ data }) {
     const now = new Date();
     const fileName = `review-results-${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}.xlsx`;
     
-    write(wb, fileName);
+    // 使用 writeFile 自动下载
+    writeFile(wb, fileName);
   };
 
   // 获取当前记录的评审状态
