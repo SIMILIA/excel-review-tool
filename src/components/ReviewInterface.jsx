@@ -43,17 +43,20 @@ function ReviewInterface({ data, onClearAll }) {
       };
       setReviews(updatedReviews);
     } else {
-      setReviews([
-        ...reviews,
-        {
-          index: currentIndex,
-          isCorrect,
-          note,
-          question: currentItem.question,
-          answer: currentItem.answer,
-          serviceId: currentItem.serviceId
-        }
-      ]);
+      // 只有在明确设置了isCorrect时才创建新记录
+      if (isCorrect !== null || note) {
+        setReviews([
+          ...reviews,
+          {
+            index: currentIndex,
+            isCorrect: isCorrect !== null ? isCorrect : undefined,  // 如果没有选择正确/错误，则设为undefined
+            note,
+            question: currentItem.question,
+            answer: currentItem.answer,
+            serviceId: currentItem.serviceId
+          }
+        ]);
+      }
     }
   };
 
@@ -79,7 +82,7 @@ function ReviewInterface({ data, onClearAll }) {
           问题: item.question,
           回答: item.answer,
           服务编号: item.serviceId,
-          评分结果: review ? (review.isCorrect ? '正确' : '错误') : '',
+          评分结果: review?.isCorrect === undefined ? '' : (review?.isCorrect ? '正确' : '错误'),  // 修改这里的逻辑
           备注: review?.note || ''
         };
       });
