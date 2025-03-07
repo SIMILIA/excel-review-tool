@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/excel-review-tool/static/css/main.d8a7d2aa.css",
+    "main.js": "/excel-review-tool/static/js/main.0ff73dcf.js",
+    "index.html": "/excel-review-tool/index.html",
+    "main.d8a7d2aa.css.map": "/excel-review-tool/static/css/main.d8a7d2aa.css.map",
+    "main.0ff73dcf.js.map": "/excel-review-tool/static/js/main.0ff73dcf.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d8a7d2aa.css",
+    "static/js/main.0ff73dcf.js"
+  ]
+}
