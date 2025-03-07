@@ -6,7 +6,17 @@ function ReviewInterface({ data }) {
   // 使用 localStorage 存储评审记录
   const storageKey = 'excelReviewData';
   
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // 从 localStorage 读取当前位置
+  const [currentIndex, setCurrentIndex] = useState(() => {
+    const savedIndex = localStorage.getItem('currentIndex');
+    return savedIndex ? parseInt(savedIndex) : 0;
+  });
+
+  // 保存当前位置
+  useEffect(() => {
+    localStorage.setItem('currentIndex', currentIndex.toString());
+  }, [currentIndex]);
+
   const [reviews, setReviews] = useState(() => {
     // 从 localStorage 读取保存的评审记录
     const savedReviews = localStorage.getItem(storageKey);
@@ -93,6 +103,8 @@ function ReviewInterface({ data }) {
     if (window.confirm('确定要清除所有评审记录吗？这个操作不能撤销。')) {
       setReviews([]);
       localStorage.removeItem(storageKey);
+      localStorage.removeItem('currentIndex');
+      setCurrentIndex(0);
     }
   };
 
