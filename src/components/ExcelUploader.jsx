@@ -57,12 +57,16 @@ function ExcelUploader({ onDataLoaded }) {
       <p className="description">
         请上传包含问题、回答和服务编号的Excel文件
       </p>
-      <input 
-        type="file" 
-        accept=".xlsx,.xls" 
-        onChange={handleFileUpload}
-        disabled={loading}
-      />
+      <label className="upload-button">
+        选择文件
+        <input 
+          type="file" 
+          accept=".xlsx,.xls" 
+          onChange={handleFileUpload}
+          disabled={loading}
+          style={{ display: 'none' }}
+        />
+      </label>
       {loading && <div className="loading">正在处理文件...</div>}
       {error && <div className="error">{error}</div>}
     </div>
