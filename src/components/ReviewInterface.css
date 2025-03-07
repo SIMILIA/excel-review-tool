@@ -2,15 +2,16 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  background-color: #f5f5f5;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #ddd;
+  padding: 15px 20px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .progress {
@@ -25,18 +26,132 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .export-btn:hover {
   background-color: #45a049;
 }
 
-.left-panel {
-  width: 40%;
+.content {
+  flex: 1;
   padding: 20px;
-  border-right: 1px solid #ccc;
-  overflow-y: auto;
-  height: calc(100vh - 50px);
+  overflow: auto;
+}
+
+.left-panel {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 20px;
+}
+
+.question-section {
+  margin-bottom: 20px;
+}
+
+.question-section h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.question-section p {
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.service-link {
+  margin: 15px 0;
+}
+
+.service-link a {
+  color: #2196F3;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.service-link a:hover {
+  text-decoration: underline;
+}
+
+.review-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.review-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.review-buttons button {
+  flex: 1;
+  padding: 12px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.review-buttons button:first-child {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.review-buttons button:first-child:hover,
+.review-buttons button:first-child.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.review-buttons button:last-child {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.review-buttons button:last-child:hover,
+.review-buttons button:last-child.active {
+  background-color: #f44336;
+  color: white;
+}
+
+.review-controls textarea {
+  width: 100%;
+  height: 100px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  font-size: 14px;
+}
+
+.navigation-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.navigation-buttons button {
+  flex: 1;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.navigation-buttons button:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.navigation-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .right-panel {
@@ -48,55 +163,6 @@
   width: 100%;
   height: 100%;
   border: none;
-}
-
-.question-section {
-  margin-bottom: 20px;
-}
-
-.review-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.review-controls button {
-  padding: 10px;
-  cursor: pointer;
-  background-color: #f0f0f0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-}
-
-.review-controls button:first-child {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-}
-
-.review-controls button:first-child:hover {
-  background-color: #45a049;
-}
-
-.review-controls button:last-of-type {
-  background-color: #f44336;
-  color: white;
-  border: none;
-}
-
-.review-controls button:last-of-type:hover {
-  background-color: #d32f2f;
-}
-
-.review-controls textarea {
-  width: 100%;
-  height: 100px;
-  margin-top: 10px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  resize: vertical;
 }
 
 .view-service-btn {

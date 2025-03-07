@@ -9,17 +9,38 @@ function ReviewInterface({ data }) {
   const currentItem = data[currentIndex];
   
   const handleReview = (isCorrect, note = '') => {
-    setReviews([
-      ...reviews,
-      {
-        index: currentIndex,
-        isCorrect,
-        note,
-        question: currentItem.question,
-        answer: currentItem.answer
-      }
-    ]);
-    
+    // 更新或添加评审记录
+    const existingReviewIndex = reviews.findIndex(r => r.index === currentIndex);
+    if (existingReviewIndex !== -1) {
+      const updatedReviews = [...reviews];
+      updatedReviews[existingReviewIndex] = {
+        ...updatedReviews[existingReviewIndex],
+        isCorrect: isCorrect !== null ? isCorrect : updatedReviews[existingReviewIndex].isCorrect,
+        note: note || updatedReviews[existingReviewIndex].note
+      };
+      setReviews(updatedReviews);
+    } else {
+      setReviews([
+        ...reviews,
+        {
+          index: currentIndex,
+          isCorrect,
+          note,
+          question: currentItem.question,
+          answer: currentItem.answer,
+          serviceId: currentItem.serviceId
+        }
+      ]);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  const handleNext = () => {
     if (currentIndex < data.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
@@ -29,16 +50,24 @@ function ReviewInterface({ data }) {
     const exportData = reviews.map(review => ({
       问题: review.question,
       回答: review.answer,
+      服务编号: review.serviceId,
       评分结果: review.isCorrect ? '正确' : '错误',
-      备注: review.note
+      备注: review.note || ''
     }));
 
     const ws = utils.json_to_sheet(exportData);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, '评审结果');
     
-    write(wb, 'review-results.xlsx');
+    // 使用当前日期时间作为文件名
+    const now = new Date();
+    const fileName = `review-results-${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}.xlsx`;
+    
+    write(wb, fileName);
   };
+
+  // 获取当前记录的评审状态
+  const currentReview = reviews.find(r => r.index === currentIndex);
 
   return (
     <div className="review-interface">
@@ -50,29 +79,63 @@ function ReviewInterface({ data }) {
           导出结果
         </button>
       </div>
-      <div className="left-panel">
-        <div className="question-section">
-          <h3>问题：</h3>
-          <p>{currentItem.question}</p>
-          <h3>回答：</h3>
-          <p>{currentItem.answer}</p>
+      <div className="content">
+        <div className="left-panel">
+          <div className="question-section">
+            <h3>问题：</h3>
+            <p>{currentItem.question}</p>
+            <h3>回答：</h3>
+            <p>{currentItem.answer}</p>
+            <div className="service-link">
+              <a 
+                href={`https://www.gov.mo/zh-hant/services/${currentItem.serviceId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                打开服务网页
+              </a>
+            </div>
+          </div>
+          <div className="review-controls">
+            <div className="review-buttons">
+              <button 
+                onClick={() => handleReview(true)}
+                className={currentReview?.isCorrect === true ? 'active' : ''}
+              >
+                正确
+              </button>
+              <button 
+                onClick={() => handleReview(false)}
+                className={currentReview?.isCorrect === false ? 'active' : ''}
+              >
+                错误
+              </button>
+            </div>
+            <textarea 
+              placeholder="添加备注..."
+              value={currentReview?.note || ''}
+              onChange={(e) => handleReview(null, e.target.value)}
+            />
+            <div className="navigation-buttons">
+              <button onClick={handlePrevious} disabled={currentIndex === 0}>
+                上一条
+              </button>
+              <button onClick={handleNext} disabled={currentIndex === data.length - 1}>
+                下一条
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="review-controls">
-          <button onClick={() => handleReview(true)}>正确</button>
-          <button onClick={() => handleReview(false)}>错误</button>
-          <textarea 
-            placeholder="添加备注..."
-            onChange={(e) => handleReview(null, e.target.value)}
+        <div className="right-panel">
+          <iframe 
+            src={`https://www.gov.mo/zh-hant/services/${currentItem.serviceId}`}
+            title="服务手续网站"
+            referrerPolicy="no-referrer"
+            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+            loading="lazy"
+            importance="high"
           />
         </div>
-      </div>
-      <div className="right-panel">
-        <iframe 
-          src={`https://www.gov.mo/zh-hant/services/${currentItem.serviceId}`}
-          title="服务手续网站"
-          referrerPolicy="no-referrer"
-          allow="fullscreen"
-        />
       </div>
     </div>
   );
