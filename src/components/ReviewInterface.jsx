@@ -56,14 +56,6 @@ function ReviewInterface({ data }) {
           <p>{currentItem.question}</p>
           <h3>回答：</h3>
           <p>{currentItem.answer}</p>
-          <a 
-            href={`https://www.gov.mo/zh-hant/services/${currentItem.serviceId}/`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="view-service-btn"
-          >
-            在新窗口查看服务详情
-          </a>
         </div>
         <div className="review-controls">
           <button onClick={() => handleReview(true)}>正确</button>
@@ -73,6 +65,14 @@ function ReviewInterface({ data }) {
             onChange={(e) => handleReview(null, e.target.value)}
           />
         </div>
+      </div>
+      <div className="right-panel">
+        <iframe 
+          src={`https://www.gov.mo/zh-hant/services/${currentItem.serviceId}`}
+          title="服务手续网站"
+          referrerPolicy="no-referrer"
+          allow="fullscreen"
+        />
       </div>
     </div>
   );
