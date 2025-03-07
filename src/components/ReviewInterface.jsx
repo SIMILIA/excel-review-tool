@@ -1,12 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { utils, writeFile } from 'xlsx';
 import './ReviewInterface.css';
 
 function ReviewInterface({ data }) {
+  // 使用 localStorage 存储评审记录
+  const storageKey = 'excelReviewData';
+  
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState(() => {
+    // 从 localStorage 读取保存的评审记录
+    const savedReviews = localStorage.getItem(storageKey);
+    return savedReviews ? JSON.parse(savedReviews) : [];
+  });
   const [showList, setShowList] = useState(false);
   
+  // 当 reviews 改变时保存到 localStorage
+  useEffect(() => {
+    localStorage.setItem(storageKey, JSON.stringify(reviews));
+  }, [reviews]);
+
   const currentItem = data[currentIndex];
   
   const handleReview = (isCorrect, note = '') => {
@@ -48,23 +60,23 @@ function ReviewInterface({ data }) {
   };
 
   const exportToExcel = () => {
-    const exportData = reviews.map(review => ({
-      问题: review.question,
-      回答: review.answer,
-      服务编号: review.serviceId,
-      评分结果: review.isCorrect ? '正确' : '错误',
-      备注: review.note || ''
-    }));
+    // 创建一个新的数组，包含所有原始数据
+    const exportData = data.map((item, index) => {
+      const review = reviews.find(r => r.index === index);
+      return {
+        ...item,  // 保留原始数据的所有字段
+        评分结果: review ? (review.isCorrect ? '正确' : '错误') : '',  // 如果有评审则添加结果
+        备注: review?.note || ''  // 如果有备注则添加备注
+      };
+    });
 
     const ws = utils.json_to_sheet(exportData);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, '评审结果');
     
-    // 使用当前日期时间作为文件名
     const now = new Date();
     const fileName = `review-results-${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}.xlsx`;
     
-    // 使用 writeFile 自动下载
     writeFile(wb, fileName);
   };
 
@@ -76,6 +88,14 @@ function ReviewInterface({ data }) {
     setShowList(false);
   };
 
+  // 添加清除数据的功能
+  const handleClearData = () => {
+    if (window.confirm('确定要清除所有评审记录吗？这个操作不能撤销。')) {
+      setReviews([]);
+      localStorage.removeItem(storageKey);
+    }
+  };
+
   return (
     <div className="review-interface">
       <div className="header">
@@ -85,9 +105,14 @@ function ReviewInterface({ data }) {
             {showList ? '隐藏列表' : '显示列表'}
           </button>
         </div>
-        <button className="export-btn" onClick={exportToExcel}>
-          导出结果
-        </button>
+        <div className="header-buttons">
+          <button className="clear-btn" onClick={handleClearData}>
+            清除记录
+          </button>
+          <button className="export-btn" onClick={exportToExcel}>
+            导出结果
+          </button>
+        </div>
       </div>
       <div className="main-content">
         {showList && (
