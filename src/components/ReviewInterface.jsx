@@ -5,6 +5,7 @@ import './ReviewInterface.css';
 function ReviewInterface({ data }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [reviews, setReviews] = useState([]);
+  const [showList, setShowList] = useState(false);
   
   const currentItem = data[currentIndex];
   
@@ -69,72 +70,94 @@ function ReviewInterface({ data }) {
   // 获取当前记录的评审状态
   const currentReview = reviews.find(r => r.index === currentIndex);
 
+  const handleSelectItem = (index) => {
+    setCurrentIndex(index);
+    setShowList(false);
+  };
+
   return (
     <div className="review-interface">
       <div className="header">
         <div className="progress">
           进度：{currentIndex + 1} / {data.length}
+          <button className="list-toggle" onClick={() => setShowList(!showList)}>
+            {showList ? '隐藏列表' : '显示列表'}
+          </button>
         </div>
         <button className="export-btn" onClick={exportToExcel}>
           导出结果
         </button>
       </div>
-      <div className="content">
-        <div className="left-panel">
-          <div className="question-section">
-            <h3>问题：</h3>
-            <p>{currentItem.question}</p>
-            <h3>回答：</h3>
-            <p>{currentItem.answer}</p>
-            <div className="service-link">
+      <div className="main-content">
+        {showList && (
+          <div className="records-list">
+            {data.map((item, index) => (
+              <div 
+                key={index}
+                className={`record-item ${index === currentIndex ? 'active' : ''} ${
+                  reviews.find(r => r.index === index)?.isCorrect === true ? 'correct' :
+                  reviews.find(r => r.index === index)?.isCorrect === false ? 'incorrect' : ''
+                }`}
+                onClick={() => handleSelectItem(index)}
+              >
+                <div className="record-number">#{index + 1}</div>
+                <div className="record-preview">
+                  <div className="record-question">{item.question.substring(0, 50)}...</div>
+                  <div className="record-status">
+                    {reviews.find(r => r.index === index)?.isCorrect === true && '✓'}
+                    {reviews.find(r => r.index === index)?.isCorrect === false && '✗'}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="review-content">
+          <div className="left-panel">
+            <div className="question-section">
+              <h3>问题：</h3>
+              <p>{currentItem.question}</p>
+              <h3>回答：</h3>
+              <p>{currentItem.answer}</p>
               <a 
                 href={`https://www.gov.mo/zh-hant/services/${currentItem.serviceId}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="service-link"
               >
-                打开服务网页
+                在新窗口查看服务网页
               </a>
             </div>
-          </div>
-          <div className="review-controls">
-            <div className="review-buttons">
-              <button 
-                onClick={() => handleReview(true)}
-                className={currentReview?.isCorrect === true ? 'active' : ''}
-              >
-                正确
-              </button>
-              <button 
-                onClick={() => handleReview(false)}
-                className={currentReview?.isCorrect === false ? 'active' : ''}
-              >
-                错误
-              </button>
+            <div className="review-controls">
+              <div className="review-buttons">
+                <button 
+                  onClick={() => handleReview(true)}
+                  className={currentReview?.isCorrect === true ? 'active' : ''}
+                >
+                  正确
+                </button>
+                <button 
+                  onClick={() => handleReview(false)}
+                  className={currentReview?.isCorrect === false ? 'active' : ''}
+                >
+                  错误
+                </button>
+              </div>
+              <textarea 
+                placeholder="添加备注..."
+                value={currentReview?.note || ''}
+                onChange={(e) => handleReview(null, e.target.value)}
+              />
+              <div className="navigation-buttons">
+                <button onClick={handlePrevious} disabled={currentIndex === 0}>
+                  上一条
+                </button>
+                <button onClick={handleNext} disabled={currentIndex === data.length - 1}>
+                  下一条
+                </button>
+              </div>
             </div>
-            <textarea 
-              placeholder="添加备注..."
-              value={currentReview?.note || ''}
-              onChange={(e) => handleReview(null, e.target.value)}
-            />
-            <div className="navigation-buttons">
-              <button onClick={handlePrevious} disabled={currentIndex === 0}>
-                上一条
-              </button>
-              <button onClick={handleNext} disabled={currentIndex === data.length - 1}>
-                下一条
-              </button>
-            </div>
           </div>
-        </div>
-        <div className="right-panel">
-          <iframe 
-            src={`https://www.gov.mo/zh-hant/services/${currentItem.serviceId}`}
-            title="服务手续网站"
-            referrerPolicy="no-referrer"
-            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-            loading="lazy"
-            importance="high"
-          />
         </div>
       </div>
     </div>
