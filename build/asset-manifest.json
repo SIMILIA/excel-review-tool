@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/excel-review-tool/static/css/main.03b21398.css",
-    "main.js": "/excel-review-tool/static/js/main.22de879b.js",
+    "main.css": "/excel-review-tool/static/css/main.ea102a22.css",
+    "main.js": "/excel-review-tool/static/js/main.2599b033.js",
     "index.html": "/excel-review-tool/index.html",
-    "main.03b21398.css.map": "/excel-review-tool/static/css/main.03b21398.css.map",
-    "main.22de879b.js.map": "/excel-review-tool/static/js/main.22de879b.js.map"
+    "main.ea102a22.css.map": "/excel-review-tool/static/css/main.ea102a22.css.map",
+    "main.2599b033.js.map": "/excel-review-tool/static/js/main.2599b033.js.map"
   },
   "entrypoints": [
-    "static/css/main.03b21398.css",
-    "static/js/main.22de879b.js"
+    "static/css/main.ea102a22.css",
+    "static/js/main.2599b033.js"
   ]
 }

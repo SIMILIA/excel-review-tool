@@ -108,22 +108,42 @@ function ReviewInterface({ data }) {
     }
   };
 
+  const [showDropdown, setShowDropdown] = useState(false);
+
   return (
     <div className="review-interface">
       <div className="header">
         <div className="progress">
-          进度：{currentIndex + 1} / {data.length}
+          <span>进度：{currentIndex + 1} / {data.length}</span>
           <button className="list-toggle" onClick={() => setShowList(!showList)}>
             {showList ? '隐藏列表' : '显示列表'}
           </button>
         </div>
-        <div className="header-buttons">
-          <button className="clear-btn" onClick={handleClearData}>
-            清除记录
-          </button>
-          <button className="export-btn" onClick={exportToExcel}>
-            导出结果
-          </button>
+        <div className="header-actions">
+          <div className="dropdown">
+            <button 
+              className="dropdown-toggle"
+              onClick={() => setShowDropdown(!showDropdown)}
+            >
+              操作 ▼
+            </button>
+            {showDropdown && (
+              <div className="dropdown-menu">
+                <button onClick={handleClearData}>
+                  <span className="icon">🗑️</span>
+                  清除记录
+                </button>
+                <button onClick={exportToExcel}>
+                  <span className="icon">📥</span>
+                  导出结果
+                </button>
+                <button onClick={handleClearAll}>
+                  <span className="icon">📤</span>
+                  重新上传
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className="main-content">
